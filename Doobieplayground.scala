@@ -6,16 +6,16 @@ import cats.effect.*
 import doobie._
 import doobie.implicits._
 import doobie.util.transactor.Transactor
-import scala.concurrent.ExecutionContext
 
 object DoobieplaygroundApp extends IOApp.Simple:
   case class Student(id: Int, name: String, age: Int)
 
   val xa: Transactor[IO] = Transactor.fromDriverManager[IO](
     driver = "org.postgresql.Driver",
-    url = "jdbc:postgresql://localhost:5432/demo",
-    user = "docker",
-    password = "docker",
+    // url = "jdbc:postgresql://localhost:5432/postgres",
+    url = "jdbc:postgresql:postgres",
+    user = "postgres",
+    password = "postgres",
     logHandler = None
   )
 
