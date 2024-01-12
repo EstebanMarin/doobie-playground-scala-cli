@@ -1,8 +1,5 @@
 # Project Name
 
-## Introduction
-Code for a Blog post, on how to introduce Scala at work.
-
 ## Getting Started
 Let us take the docker compose file provided in the [official documentation](https://hub.docker.com/_/postgres)
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
