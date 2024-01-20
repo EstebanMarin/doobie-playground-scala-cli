@@ -5,7 +5,7 @@
 import cats.effect.*
 import doobie._
 import doobie.implicits._
-import cats.implicits.catsSyntaxApplicativeError
+import cats.implicits._
 import cats.syntax.all._
 import cats.syntax._
 import doobie.util.transactor.Transactor
