@@ -24,4 +24,7 @@ object DoobieplaygroundApp extends IOApp.Simple:
       .to[List]
       .transact(xa)
 
-  val run = findAllStudentNames.map(println(_))
+  def getVersion: IO[String] =
+    sql"select version()".query[String].unique.transact(xa)
+
+  val run = getVersion.flatMap(IO.println)
