@@ -5,6 +5,9 @@ boot/
 lib_managed/
 src_managed/
 
+# postgres
+postgres-data/
+
 # vim
 *.sw?
 

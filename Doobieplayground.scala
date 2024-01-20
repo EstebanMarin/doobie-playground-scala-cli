@@ -12,11 +12,9 @@ object DoobieplaygroundApp extends IOApp.Simple:
 
   val xa: Transactor[IO] = Transactor.fromDriverManager[IO](
     driver = "org.postgresql.Driver",
-    // possible error with url
-    // url = "jdbc:postgresql://localhost:5432/postgres",
-    url = "jdbc:postgresql:postgres",
-    user = "postgres",
-    password = "postgres",
+    url = "jdbc:postgresql://localhost:5432/postgres",
+    user = "docker",
+    password = "docker",
     logHandler = None
   )
 

@@ -1,83 +1,32 @@
-# Project Name
+# Scala-cli && docker-compose
 
-## Getting Started
-Let us take the docker compose file provided in the [official documentation](https://hub.docker.com/_/postgres)
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+Testing both tools and probably encountering a networking issue. 
 
 ### Prerequisites
 
 What things you need to install the software and how to install them:
+- Docker-compose
+- Scala-cli
+- 
+## Question?
 
-- Docker
-- Docker Compose
-- scala-cli
+How can I run a `scala-cli` script that accesses a `docker-compose` resource?
+What is the right `url` in [the transactor](https://github.com/EstebanMarin/doobie-playground-scala-cli/blob/1cc04f985fa5023e13fd776778f753575a4ae8d2/Doobieplayground.scala#L15) given that `docker-compose` does not expose the resource to the `scala-cli` script.
 
-### Installing
+## Problem
 
-A step-by-step series of examples that tell you how to get a development environment running:
 
-1. Clone the repository: `git clone https://github.com/username/project.git`
-2. Navigate to the project directory: `cd project`
-3. Build the Docker images: `docker-compose build`
-4. Start the services: `docker-compose up`
 
-## Running PSQL commands
-
-Once you have ran 
 
 ```bash
-$ docker-compose up
-// 1 check the container's name
-$ docker container ps
-❯ docker container ps
-CONTAINER ID   ...    NAMES
-09890cf70bd5   ...    some-postgres
-// 2 go to bash then psql, connect to postgres db
-$ docker exec -it some-postgres bash
-root@09890cf70bd5:/# psql -U postgres
-psql (16.1 (Debian 16.1-1.pgdg120+1))
-Type "help" for help.
-
-postgres=# 
+$ docker-compose up .
+//different shell or start detached 
+$ scala-cli run .
+❯ scala-cli run .
+Compiling project (Scala 3.3.1, JVM (17))
+Compiled project (Scala 3.3.1, JVM (17))
+❯ scala-cli run .
+org.postgresql.util.PSQLException: FATAL: role "postgres" does not exist
 ```
 
-Commands that need to be continued
 
-```bash
-postgres=# CREATE DATABASE DEMO;
-CREATE DATABASE
-postgres=# \l
-                                                      List of databases
-   Name    |  Owner   | Encoding | Locale Provider |  Collate   |   Ctype    | ICU Locale | ICU Rules |   Access privileges   
------------+----------+----------+-----------------+------------+------------+------------+-----------+-----------------------
- demo      | postgres | UTF8     | libc            | en_US.utf8 | ......            |           | postgres=CTc/postgres
-(4 rows)
-
-postgres=# \c demo
-You are now connected to database "demo" as user "postgres".
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system.
-
-## Built With
-
-- [Docker](https://www.docker.com/) - The container platform used.
-
-- [Docker Compose](https://docs.docker.com/compose/) - Tool for defining and running multi-container Docker applications.
-
-## Authors
-
-- **Your Name** - *Initial work* - [YourName](https://github.com/yourname)
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-- Hat tip to anyone whose code was used
-- Inspiration
-
-- etc
