@@ -8,7 +8,7 @@ import doobie.implicits._
 import doobie.util.transactor.Transactor
 
 object DoobieplaygroundApp extends IOApp.Simple:
-  case class Student(id: Int, name: String, age: Int)
+  case class Student(id: Int, name: String)
 
   val xa: Transactor[IO] = Transactor.fromDriverManager[IO](
     driver = "org.postgresql.Driver",
@@ -27,4 +27,15 @@ object DoobieplaygroundApp extends IOApp.Simple:
   def getVersion: IO[String] =
     sql"select version()".query[String].unique.transact(xa)
 
-  val run = getVersion.flatMap(IO.println) *> findAllStudentNames.flatMap(IO.println)
+  def saveStudent(id: Int, name: String): IO[Int] =
+    sql"insert into students(id, name) values ($id, $name)".update.run
+      .transact(xa)
+      .onError(_ => IO.println("error"))
+      .handleErrorWith(_ => IO(0))
+
+  val run = for
+    _ <- getVersion
+    _ <- saveStudent(1, "test")
+    s <- findAllStudentNames
+    _ <- IO.println(s) *> IO.println("done")
+  yield ()
