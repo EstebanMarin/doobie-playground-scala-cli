@@ -1,4 +1,4 @@
-//> using toolkit typelevel:default
+//> using toolkit typelevel:0.1.21
 //> using dependency org.tpolecat::doobie-core:1.0.0-RC4
 //> using dependency org.tpolecat::doobie-postgres:1.0.0-RC4
 
@@ -11,7 +11,6 @@ import cats.syntax._
 import doobie.util.transactor.Transactor
 
 object DoobieplaygroundApp extends IOApp.Simple:
-  case class Student(id: Int, name: String)
 
   val xa: Transactor[IO] = Transactor.fromDriverManager[IO](
     driver = "org.postgresql.Driver",
