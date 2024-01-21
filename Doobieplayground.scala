@@ -9,16 +9,10 @@ import cats.implicits._
 import cats.syntax.all._
 import cats.syntax._
 import doobie.util.transactor.Transactor
+import fs2.{Stream, text}
+import fs2.io.file.{Files, Path}
 
 object DoobieplaygroundApp extends IOApp.Simple:
-
-  val xa: Transactor[IO] = Transactor.fromDriverManager[IO](
-    driver = "org.postgresql.Driver",
-    url = "jdbc:postgresql://localhost:5432/postgres",
-    user = "docker",
-    password = "docker",
-    logHandler = None
-  )
 
   trait StudentRepository[F[_]]:
     def findAllStudentNames: F[List[String]]
@@ -26,7 +20,15 @@ object DoobieplaygroundApp extends IOApp.Simple:
     def saveStudent(id: Int, name: String): F[Int]
 
   object StudentRepository:
-    def make[F[_]: Sync](xa: Transactor[F]): StudentRepository[F] = new StudentRepository[F]:
+    def make[F[_]: Async]: StudentRepository[F] = new StudentRepository[F]:
+      val xa: Transactor[F] = Transactor.fromDriverManager[F](
+        driver = "org.postgresql.Driver",
+        url = "jdbc:postgresql://localhost:5432/postgres",
+        user = "docker",
+        password = "docker",
+        logHandler = None
+      )
+
       def findAllStudentNames: F[List[String]] =
         sql"select name from students"
           .query[String]
@@ -39,11 +41,14 @@ object DoobieplaygroundApp extends IOApp.Simple:
       def saveStudent(id: Int, name: String): F[Int] =
         sql"insert into students(id, name) values ($id, $name)".update.run
           .transact(xa)
+  val resource = Stream.bracket(
+    IO(StudentRepository.make[IO])
+  )((x: StudentRepository[IO]) => x.getVersion *> IO.print("closing DB"))
+
   val run =
-    for
-      // _ <- getVersion
-      // _ <- saveStudent(1, "test")
-      // s <- findAllStudentNames
-      version <- StudentRepository.make[IO](xa).getVersion
-      _       <- IO.println(version) *> IO.println("done")
-    yield ()
+    (for
+      repo    <- resource
+      version <- Stream.eval(repo.getVersion)
+      names   <- Stream.eval(repo.findAllStudentNames)
+      _       <- Stream.eval(IO.println(version))
+    yield ()).compile.drain
