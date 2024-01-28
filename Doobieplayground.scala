@@ -46,9 +46,16 @@ object DoobieplaygroundApp extends IOApp.Simple:
   )((x: StudentRepository[IO]) => x.getVersion *> IO.print("closing DB"))
 
   val run =
-    (for
-      repo    <- resource
-      version <- Stream.eval(repo.getVersion)
-      names   <- Stream.eval(repo.findAllStudentNames)
-      _       <- Stream.eval(IO.println(version))
-    yield ()).compile.drain
+    resource
+      .flatMap { Repo =>
+        Stream
+          .eval(
+            for
+              version <- Repo.getVersion
+              _       <- IO.println("Hello Docker compose working")
+              _       <- IO.println(version)
+            yield ()
+          )
+      }
+      .compile
+      .drain
