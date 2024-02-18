@@ -1,6 +1,6 @@
 # Scala-cli && docker-compose
 
-Database based on https://www.w3schools.com/postgresql/postgresql_create_demodatabase.php
+Database based on <https://www.w3schools.com/postgresql/postgresql_create_demodatabase.php>
 
 ```bash
 docker run -d\
