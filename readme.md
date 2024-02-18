@@ -32,3 +32,11 @@ docker run -d \
   -v $(pwd)/db.v001.sql:/db.v001.sql \
   postgres
   ```
+
+## run migration
+
+``` bash
+$> docker exec -it <container> psql -U postgres
+$> \c
+$> \i db.v001.sql
+```
