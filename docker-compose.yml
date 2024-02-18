@@ -13,7 +13,8 @@ services:
       POSTGRES_DB: postgres
     ports:
       - 5432:5432
-    # volumes:
+    volumes:
+      - db.v001.sql:/db.v001.sql
       # - ./postgres-data:/var/lib/postgresql/data
   pgadmin:
     image: dpage/pgadmin4
