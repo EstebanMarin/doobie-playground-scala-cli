@@ -73,8 +73,8 @@ object DoobieplaygroundApp extends IOApp.Simple:
             for
               version <- Repo.getVersion
               _       <- IO.println(version)
-            // customers <- Repo.getAllCustomers
-            // _ <- IO.println(customers)
+            customers <- Repo.getAllCustomers
+            _ <- IO.println(customers)
             yield ()
           )
       }
