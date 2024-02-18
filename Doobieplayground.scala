@@ -11,6 +11,16 @@ import cats.syntax._
 import doobie.util.transactor.Transactor
 import fs2.{Stream, text}
 import fs2.io.file.{Files, Path}
+import org.checkerframework.checker.units.qual.s
+case class Customer(
+    customerId: Int,
+    customerName: Option[String],
+    contactName: Option[String],
+    address: Option[String],
+    city: Option[String],
+    postalCode: Option[String],
+    country: Option[String]
+)
 
 object DoobieplaygroundApp extends IOApp.Simple:
 
@@ -18,6 +28,7 @@ object DoobieplaygroundApp extends IOApp.Simple:
     def findAllStudentNames: F[List[String]]
     def getVersion: F[String]
     def saveStudent(id: Int, name: String): F[Int]
+    def getAllCustomers: F[List[Customer]]
 
   object StudentRepository:
     def make[F[_]: Async]: StudentRepository[F] = new StudentRepository[F]:
@@ -41,6 +52,13 @@ object DoobieplaygroundApp extends IOApp.Simple:
       def saveStudent(id: Int, name: String): F[Int] =
         sql"insert into students(id, name) values ($id, $name)".update.run
           .transact(xa)
+
+      def getAllCustomers: F[List[Customer]] =
+        sql"select * from customers"
+          .query[Customer]
+          .to[List]
+          .transact(xa)
+
   val resource = Stream.bracket(
     IO(StudentRepository.make[IO])
   )((x: StudentRepository[IO]) => x.getVersion *> IO.print("closing DB"))
@@ -51,9 +69,10 @@ object DoobieplaygroundApp extends IOApp.Simple:
         Stream
           .eval(
             for
-              version <- Repo.getVersion
-              _       <- IO.println("Hello Docker compose working")
-              _       <- IO.println(version)
+              version   <- Repo.getVersion
+              _         <- IO.println(version)
+              customers <- Repo.getAllCustomers
+              _         <- IO.println(customers)
             yield ()
           )
       }
