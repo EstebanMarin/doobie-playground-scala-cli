@@ -12,8 +12,9 @@ import doobie.util.transactor.Transactor
 import fs2.{Stream, text}
 import fs2.io.file.{Files, Path}
 import org.checkerframework.checker.units.qual.s
+import java.util.UUID
 case class Customer(
-    customerId: Int,
+    customerId: UUID,
     customerName: Option[String],
     contactName: Option[String],
     address: Option[String],
@@ -53,6 +54,7 @@ object DoobieplaygroundApp extends IOApp.Simple:
         sql"insert into students(id, name) values ($id, $name)".update.run
           .transact(xa)
 
+      given Meta[UUID] = Meta[String].timap(UUID.fromString)(_.toString)
       def getAllCustomers: F[List[Customer]] =
         sql"select * from customers"
           .query[Customer]
@@ -69,10 +71,10 @@ object DoobieplaygroundApp extends IOApp.Simple:
         Stream
           .eval(
             for
-              version   <- Repo.getVersion
-              _         <- IO.println(version)
-              customers <- Repo.getAllCustomers
-              _         <- IO.println(customers)
+              version <- Repo.getVersion
+              _       <- IO.println(version)
+            // customers <- Repo.getAllCustomers
+            // _ <- IO.println(customers)
             yield ()
           )
       }
